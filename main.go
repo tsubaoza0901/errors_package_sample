@@ -16,10 +16,10 @@ import (
 
 // User ...
 type User struct {
-	ID             uint   `json:"id" param:"id"`       // paramタグ
-	Name           string `json:"name" query:"name"`   // queryタグ
-	Age            int    `json:"age" query:"age"`     // queryタグ
-	SomethingArray []int  `json:"array" query:"array"` // queryタグ
+	ID             uint   `json:"id" param:"id"`
+	Name           string `json:"name" query:"name"`
+	Age            int    `json:"age" query:"age"`
+	SomethingArray []int  `json:"array" query:"array"`
 }
 
 // --------
