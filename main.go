@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"net/http"
+	"os"
 	"strconv"
 
 	"github.com/labstack/echo/v4"
@@ -39,25 +40,6 @@ func InitRouting(e *echo.Echo, u *User) {
 // --------
 // handler↓
 // --------
-
-// // SomethingHandler ...
-// func SomethingHandler(c echo.Context) error {
-// 	_, err := os.Open("xxx")
-// 	if err != nil {
-// 		code := ErrFailedToServer
-// 		err = errors.Cause(err)
-// 		fmt.Println(err)
-// 		if apperr, ok := err.(*AppError); ok {
-// 			code = apperr.Code
-// 			err = apperr.Wrap()
-// 		} else {
-// 			err = NewAppError(ErrFailedToServer, err).Wrap()
-// 		}
-// 		return c.JSON(http.StatusOK, NewAPIResponse(code, err.Error(), nil))
-// 	}
-
-// 	return c.JSON(http.StatusOK, "Done!")
-// }
 
 // // CreateUser ...
 // func (u *User) CreateUser(c echo.Context) error {
@@ -133,7 +115,31 @@ func (u *User) GetUser(c echo.Context) error {
 		return c.JSON(http.StatusOK, NewAPIResponse(ErrRecordNotFound, err.Error(), nil))
 	}
 
+	if err = SomethingFunction(); err != nil {
+		code := ErrFailedToServer
+		if apperr, ok := errors.Cause(err).(*AppError); ok {
+			code = apperr.Code
+			err = apperr.Wrap()
+		} else {
+			err = NewAppError(ErrFailedToServer, err).Wrap()
+		}
+		return c.JSON(http.StatusOK, NewAPIResponse(code, err.Error(), nil))
+	}
+
 	return c.JSON(http.StatusOK, NewAPIResponse(0, StatusText(StatusSuccess), user))
+}
+
+// SomethingFunction ...
+func SomethingFunction() error {
+	_, err := os.Open("xxx")
+	if err != nil {
+		log.Error(err)
+		code := ErrFailedToServer
+		err := NewAppError(code, errors.Wrap(err, "failed to os.Open()"))
+		return errors.WithStack(err)
+	}
+
+	return nil
 }
 
 // // GetUsers ...
